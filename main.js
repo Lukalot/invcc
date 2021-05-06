@@ -27,6 +27,9 @@ Object.prototype.removeUndefinedProperties = function () {
 
 let date = new Date();
 
+
+// I know this is all horrible:
+
 let invoice_data = {};
 
 console.log(Style.bold(Style.underline('General Details:')));
@@ -42,10 +45,30 @@ invoice_data.billing_country = prompt('    ' + Style.green('📍') + ' Billing C
 invoice_data.billing_city = prompt('    ' + Style.green('🏙️') + '  Billing City:');
 
 console.log(Style.bold(Style.underline('\nItem Ledger:')));
+console.log(Style.italic('List items in the format: Rocket Design, Painting Lesson, Tech Support'))
 invoice_data.items = prompt('    ' + Style.yellow('📦') + ' Items:');
 
+// Remove empty properties used for console.log
+invoice_data.removeUndefinedProperties();
+
+// Convert items string array
+invoice_data.items = invoice_data.items.split(',');
+// Cleanup stray whitespace
+invoice_data.items.forEach( (e, index) => { invoice_data.items[index] = e.trim() } )
+
+invoice_data.item_prices = [];
+
+console.log('')
+
+invoice_data.items.forEach( (e, index) => {
+    invoice_data.item_prices[index] = prompt('    ' + Style.yellow('💵') + ' Charge for \'' + invoice_data.items[index] + '\'' + ':')
+} )
+
+let expected_subtotal = invoice_data.item_prices.reduce((a, b) => { return parseInt(a) + parseInt(b) });
+
 console.log(Style.bold(Style.underline('\nTotals:')))
-invoice_data.subtotal = prompt('    ' + Style.blue('🧾') + ' Subtotal:');
+invoice_data.subtotal = prompt('    ' + Style.blue('🧾') + ' Subtotal:', expected_subtotal);
+console.log(Style.italic('Include percent (%) sign to auto calculate based on a rate.'))
 invoice_data.tax = prompt('    ' + Style.blue('🏛️') + '  Tax:');
 invoice_data.shipping = prompt('    ' + Style.blue('🚚') + ' Shipping:');
 
@@ -74,13 +97,5 @@ let invoice_data2 = {
         shipping: prompt('    ' + Style.blue('🚚') + ' Shipping:')
 
 }*/
-
-// Remove empty properties used for console.log
-invoice_data.removeUndefinedProperties();
-
-// Convert items string array
-invoice_data.items = invoice_data.items.split(',');
-// Cleanup stray whitespace
-invoice_data.items.forEach( (e, index) => { invoice_data.items[index] = e.trim() } )
 
 console.log(invoice_data)
