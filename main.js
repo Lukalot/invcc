@@ -5,7 +5,9 @@ import * as Style from "https://deno.land/std/fmt/colors.ts"
 const { args } = Deno;
 const parsedArgs = parse(args);
 
-//console.log(Style)
+let template = Deno.readTextFile("./invoice_templates/sparksuite_simple.html");
+
+// console.log(Style)
 
 function monthFromNum (number) {
     let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
@@ -33,44 +35,49 @@ let date = new Date();
 let invoice_data = {};
 
 console.log(Style.bold(Style.underline('General Details:')));
-invoice_data.invoice_number = prompt('    ' + Style.red('📟') + ' Invoice #:');
-invoice_data.creation_date = prompt('    ' + Style.red('📆') + ' Date:', datePretty(date.getMonth(), date.getDate(), date.getFullYear()));
-invoice_data.due_date = prompt('    ' + Style.red('📆') + ' Due date:', datePretty((date.getMonth()+1)%12, date.getDate(), date.getFullYear()+Math.floor(date.getMonth()/12)));
+    invoice_data.invoice_number = prompt('    ' + Style.red('📟') + ' Invoice #:');
+    invoice_data.creation_date = prompt('    ' + Style.red('📆') + ' Date:', datePretty(date.getMonth(), date.getDate(), date.getFullYear()));
+    invoice_data.due_date = prompt('    ' + Style.red('📆') + ' Due date:', datePretty((date.getMonth()+1)%12, date.getDate(), date.getFullYear()+Math.floor(date.getMonth()/12)));
 
 console.log(Style.bold(Style.underline('\nBilling:')));
-invoice_data.customer_name = prompt('    ' + Style.green('🧑') + ' Customer Name:');
-invoice_data.company = prompt('    ' + Style.green('🏢') + ' Company:');
-invoice_data.billing_address = prompt('    ' + Style.green('🌍') + ' Billing Address:');
-invoice_data.billing_country = prompt('    ' + Style.green('📍') + ' Billing Country:');
-invoice_data.billing_city = prompt('    ' + Style.green('🏙️') + '  Billing City:');
+    invoice_data.customer_name = prompt('    ' + Style.green('🧑') + ' Client Name:');
+    invoice_data.company = prompt('    ' + Style.green('🏢') + ' Company:');
+    invoice_data.billing_address = prompt('    ' + Style.green('📍') + ' Billing Street Address:');
+    invoice_data.billing_country = prompt('    ' + Style.green('🌍') + ' Billing Country:');
+    invoice_data.billing_city = prompt('    ' + Style.green('🏙️') + '  Billing City:');
 
 console.log(Style.bold(Style.underline('\nItem Ledger:')));
-console.log(Style.italic('List items in the format: Rocket Design, Painting Lesson, Tech Support'))
-invoice_data.items = prompt('    ' + Style.yellow('📦') + ' Items:');
+    console.log(Style.italic('List items in the format: Rocket Design, Painting Lesson, Tech Support'))
+    invoice_data.items = prompt('    ' + Style.yellow('📦') + ' Items:');
 
-// Remove empty properties used for console.log
-invoice_data.removeUndefinedProperties();
+    // Remove empty properties used for console.log
+    invoice_data.removeUndefinedProperties();
 
-// Convert items string array
-invoice_data.items = invoice_data.items.split(',');
-// Cleanup stray whitespace
-invoice_data.items.forEach( (e, index) => { invoice_data.items[index] = e.trim() } )
+    // Convert items string array
+    invoice_data.items = invoice_data.items.split(',');
+    // Cleanup stray whitespace
+    invoice_data.items.forEach( (e, index) => { invoice_data.items[index] = e.trim() } );
 
-invoice_data.item_prices = [];
+    invoice_data.item_prices = [];
 
-console.log('')
+    console.log('');
 
-invoice_data.items.forEach( (e, index) => {
-    invoice_data.item_prices[index] = prompt('    ' + Style.yellow('💵') + ' Charge for \'' + invoice_data.items[index] + '\'' + ':')
-} )
+    invoice_data.items.forEach( (e, index) => {
+        invoice_data.item_prices[index] = prompt('    ' + Style.yellow('💵') + ' Charge for \'' + invoice_data.items[index] + '\'' + ':');
+    } )
 
-let expected_subtotal = invoice_data.item_prices.reduce((a, b) => { return parseInt(a) + parseInt(b) });
+    let expected_subtotal = invoice_data.item_prices.reduce((a, b) => { return parseInt(a) + parseInt(b) });
 
-console.log(Style.bold(Style.underline('\nTotals:')))
-invoice_data.subtotal = prompt('    ' + Style.blue('🧾') + ' Subtotal:', expected_subtotal);
-console.log(Style.italic('Include percent (%) sign to auto calculate based on a rate.'))
-invoice_data.tax = prompt('    ' + Style.blue('🏛️') + '  Tax:');
-invoice_data.shipping = prompt('    ' + Style.blue('🚚') + ' Shipping:');
+console.log(Style.bold(Style.underline('\nMiscellaneous:')));
+    invoice_data.note = prompt('    ' + Style.magenta('📝') + ' Note:');
+
+console.log(Style.bold(Style.underline('\nTotals:')));
+    invoice_data.subtotal = prompt('    ' + Style.blue('🧾') + ' Subtotal:', expected_subtotal);
+    invoice_data.discount = prompt('    ' + Style.blue('💸') + ' Discount:');
+    console.log(Style.italic('Include percent (%) sign to auto calculate based on a rate.'));
+    invoice_data.tax = prompt('    ' + Style.blue('🏛️') + '  Tax:');
+    invoice_data.shipping = prompt('    ' + Style.blue('🚚') + ' Shipping:');
+    invoice_data.total = prompt('    ' + Style.blue('🧾') + ' Total:', invoice_data.subtotal - invoice_data.discount);
 
 // Prompt the user for invoice field data
 /*
@@ -98,4 +105,5 @@ let invoice_data2 = {
 
 }*/
 
-console.log(invoice_data)
+console.log();
+console.log(invoice_data);
