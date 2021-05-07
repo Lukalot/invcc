@@ -53,3 +53,28 @@ export function colorByName (name, string) {
             break;
     }
 }
+
+export let field_type = {
+    number: function (value) {
+        return numFromStr(value);
+    },
+    string: function (value) {
+        return value;
+    },
+    item_list: function (value) {
+        value = value.split(',');
+        // Cleanup stray whitespace
+        value.forEach( (e, index) => { value[index] = e.trim() } );
+        return value;
+    },
+    tax: function (value, data) {
+        if (value.includes('%')) {
+            value = numFromStr(value)
+            value = round(value * ((data['Totals'].fields.Subtotal.value - data['Totals'].fields.Discount.value)/100), 2)
+            return value;
+        } else {
+            value = numFromStr(value)
+            return value;
+        }
+    }
+}

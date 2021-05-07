@@ -12,7 +12,7 @@
  * 
  * Fields:
  *  - icon, an emoji displayed next to the field name when icons are enabled
- *  - type, the field type. Changes how the input is saved. The following types are avaliable: string, number (TODO: date, price)
+ *  - format, the field format. Changes how the input is saved. The following formats are avaliable: string, number (TODO: date, price)
  *  - hint, a hint that will appear above the prompt if hints are enabled
  *  - auto, or Automatic suggestion. This is an expression/value which is avaliable next to the prompt during invoice creation, and can be accepted by pressing enter without entering a new value.
  *  - value, or override value. This value will be used if avaliable.
@@ -30,16 +30,16 @@ export let defaults = {
         fields: {
             'Invoice Number': {
                 icon: '📟',
-                type: 'number',
+                format: Helpers.field_type.number,
             },
             'Creation Date': {
                 icon: '📆',
-                type: 'string',
+                format: Helpers.field_type.string,
                 auto: () => Helpers.datePretty(Helpers.date.getMonth(), Helpers.date.getDate(), Helpers.date.getFullYear()),
             },
             'Due Date': {
                 icon: '📆',
-                type: 'string',
+                format:  Helpers.field_type.string,
                 auto: () => Helpers.datePretty((Helpers.date.getMonth()+1)%12, Helpers.date.getDate(), Helpers.date.getFullYear()+Math.floor(Helpers.date.getMonth()/12)),
             }
         }
@@ -49,22 +49,22 @@ export let defaults = {
         'fields': {
             'Name': {
                 icon: '🧑',
-                type: 'string',
+                format: Helpers.field_type.string,
 
                 // If a 'value' property is filled on a field, it will automatically be used instead of prompting the user
                 value: ''
             },
             'Address': {
                 icon: '📍',
-                type: 'string',
+                format: Helpers.field_type.string,
             },
             'Phone Number': {
                 icon: '📞',
-                type: 'string',
+                format: Helpers.field_type.string,
             },
             'Email Address': {
                 icon: '📧',
-                type: 'string',
+                format: Helpers.field_type.string,
                 auto: () => 'example@email.com' // Simple auto suggestion, ideally you can put your address here. Or, you can replace this with a `value:` setting
             }
         }
@@ -74,24 +74,24 @@ export let defaults = {
         'fields': {
             'Customer Name': {
                 icon: '🧑',
-                type: 'string',
+                format: Helpers.field_type.string,
             },
             'Company': {
                 icon: '🏢',
-                type: 'string',
+                format: Helpers.field_type.string,
             },
             'Billing Street Address': {
                 icon: '📍',
-                type: 'string',
+                format: Helpers.field_type.string,
             },
             'Billing Country': {
                 icon: '🌍',
-                type: 'string',
+                format: Helpers.field_type.string,
                 
             },
             'Billing City': {
                 icon: '🏙️ ',
-                type: 'string',
+                format: Helpers.field_type.string,
             }
         }
     },
@@ -100,9 +100,9 @@ export let defaults = {
         'fields': {
             'Items': {
                 icon: '📦',
-                type: 'string',
+                format: Helpers.field_type.item_list,
                 hint: 'List items in the format: Rocket Design, Painting Lesson, Tech Support'
-            }
+            },
         }
     },
     'Miscellaneous': {
@@ -110,7 +110,7 @@ export let defaults = {
         'fields': {
             'Note': {
                 icon: '📝',
-                type: 'string',
+                format: Helpers.field_type.string,
             }
         }
     },
@@ -119,24 +119,31 @@ export let defaults = {
         'fields': {
             'Subtotal': {
                 icon: '🧾',
-                type: 'number',
+                format: Helpers.field_type.number,
+                auto: (data) => data['Item Ledger'].fields.Items.item_prices.reduce((a, b) => { return parseInt(a) + parseInt(b) })
             },
             'Discount': {
                 icon: '💸',
-                type: 'number',
+                format: Helpers.field_type.number,
             },
             'Tax': {
                 icon: '🏛️ ',
-                type: 'number',
-                hint: 'Include percent (%) sign to auto calculate based on a rate.'
+                format: Helpers.field_type.tax,
+                hint: 'Include percent (%) sign to auto calculate based on a rate. (todo)'
             },
             'Shipping': {
                 icon: '🚚',
-                type: 'number',
+                format: Helpers.field_type.number,
             },
             'Total': {
                 icon: '🧾',
-                type: 'number',
+                format: Helpers.field_type.number,
+                auto: (data) => {
+                    return data['Totals'].fields.Subtotal.value
+                         - data['Totals'].fields.Discount.value
+                         + data['Totals'].fields.Tax.value
+                         + data['Totals'].fields.Shipping.value
+                }
             }
         }
     }

@@ -135,7 +135,7 @@ console.log(Style.bold(Style.underline('\nTotals:')));
     }
 
     invoice_data.shipping = numFromStr(prompt('    ' + Style.blue('🚚') + ' Shipping:'));
-
+    
     invoice_data.total = round(numFromStr(((invoice_data.subtotal - invoice_data.discount) + invoice_data.tax + invoice_data.shipping)), 2);
 
     console.log('    ' + Style.blue('🧾') + ' Total:' + ' $' + invoice_data.total)

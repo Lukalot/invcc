@@ -31,10 +31,12 @@ if (cli_args.nohint) {
 
 if (cli_args.help || cli_args.h) {
     console.log(
-```
-
-```
-    );
+        Style.bold(`invcc Help`) +
+        `
+    --nocolor | disables color in output
+    --nohint  | disables hinting in output
+    --noicon  | disables field icons in output`);
+    Deno.exit(1);
 }
 
 let template = Deno.readTextFile("./invoice_templates/sparksuite_simple.html");
@@ -46,10 +48,25 @@ import { defaults } from "./defaults.js"
 
 let invoice_data = defaults;
 
-
+/*
+function formatByType (type, data) {
+    if (type === 'number') {
+        return Helpers.numFromStr(data);
+    } else if (type === 'string') {
+        return data;
+    } else if (type === 'item_list') {
+        data = data.split(',');
+        // Cleanup stray whitespace
+        data.forEach( (e, index) => { data[index] = e.trim() } );
+        return data;
+    }
+}*/
 
 // Loop through all categories and fields asking for inputs
 for ( let i = 0; i < Object.keys(invoice_data).length; i ++ ) {
+
+    // newline if not the first category
+    (i === 0) ? null : console.log()
 
     // Category title
     console.log(Style.bold(Style.underline(Object.keys(invoice_data)[i])))
@@ -59,41 +76,55 @@ for ( let i = 0; i < Object.keys(invoice_data).length; i ++ ) {
 
     // Loop through all fields of the current property
     for ( let key in current_category.fields ) {
-        // If there is no preset value for the given invoice field, ask the user to set one
-        if ( !current_category.fields[key].value ) {
 
+        // Get the current active field
+        let current_field = current_category.fields[key];
+
+        // If there is no preset value for the given invoice field, ask the user to set one
+        if ( !current_field.value ) {
             // Generate prompt based on options (set via either config or CLI flags)
             let prompt_text;
-            if ( current_category.fields[key].hint && options.hints ) {
+            if ( current_field.hint && options.hints ) {
                 if (options.color) {
-                    console.log(Style.italic(Style.dim(current_category.fields[key].hint)))
+                    console.log(Style.italic(Style.dim(current_field.hint)))
                 } else {
-                    console.log(Style.italic(current_category.fields[key].hint))
+                    console.log(Style.italic(current_field.hint))
                 }
             }
 
             // Check if icons are enabled and there is an icon avaliable for the active field
-            if ( current_category.fields[key].icon && options.icons ) {
+            if ( current_field.icon && options.icons ) {
                 if (options.color) {
                     // if icons AND color are enabled
-                    prompt_text = '    ' + Helpers.colorByName( current_category.color, current_category.fields[key].icon) + " " + key + ':'
+                    prompt_text = '    ' + Helpers.colorByName( current_category.color, current_field.icon) + " " + key + ':'
                 } else {
-                    prompt_text = '    ' + current_category.fields[key].icon + " " + key + ':'
+                    prompt_text = '    ' + current_field.icon + " " + key + ':'
                 }
             } else {
-                prompt_text = '       ' + key + ':'
+                prompt_text =  '       ' + key + ':'
             }
 
-            if (current_category.fields[key].auto) {
-                // If there is an auto function expression avaliable, evaluate it and use it as the automatic suggestion
-                current_category.fields[key].value = prompt(prompt_text, current_category.fields[key].auto())
+            if (current_field.auto) {
+                // If there is an auto property avaliable, evaluate it and use it as the automatic suggestion
+                current_field.value = prompt(prompt_text, current_field.auto(invoice_data))
             } else {
                 // just prompt
-                current_category.fields[key].value = prompt(prompt_text)
+                current_field.value = prompt(prompt_text)
+            }
+            
+            // format the value data with this field's formatting function
+            current_field.value = current_field.format(current_field.value, invoice_data)
+            
+            if (current_field.format === Helpers.field_type.item_list) {
+                console.log();
+                current_field.item_prices = [];
+                current_field.value.forEach( (e, index) => {
+                    current_field.item_prices[index] = Helpers.numFromStr(prompt('    ' + Style.yellow('💵') + ' Charge for \'' + current_field.value[index] + '\'' + ':'));
+                } )
             }
         }
     }
 }
 
-console.log();
+//console.log();
 console.log(invoice_data);
