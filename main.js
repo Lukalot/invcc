@@ -18,6 +18,20 @@ function datePretty (month, date, year) {
     return `${ monthFromNum(month) } ${date}, ${year}`
 }
 
+function round (number, decimalPlaces) {
+    const factorOfTen = Math.pow(10, decimalPlaces);
+    return Math.round(number * factorOfTen) / factorOfTen;
+}
+
+function numFromStr(str) {
+    if (typeof str === 'string') {
+        return Number(str.replace(/[^0-9.]/g, ''));
+    } else {
+        return str
+    }
+}
+
+
 // Helps remove the remains of console.logs() used in the invoice_data decleration later.
 Object.prototype.removeUndefinedProperties = function () {
     for (let i = 0; i < Object.keys(this).length; i ++) {
@@ -35,7 +49,7 @@ let date = new Date();
 let invoice_data = {};
 
 console.log(Style.bold(Style.underline('General Details:')));
-    invoice_data.invoice_number = prompt('    ' + Style.red('📟') + ' Invoice #:');
+    invoice_data.invoice_number = numFromStr(prompt('    ' + Style.red('📟') + ' Invoice #:'));
     invoice_data.creation_date = prompt('    ' + Style.red('📆') + ' Date:', datePretty(date.getMonth(), date.getDate(), date.getFullYear()));
     invoice_data.due_date = prompt('    ' + Style.red('📆') + ' Due date:', datePretty((date.getMonth()+1)%12, date.getDate(), date.getFullYear()+Math.floor(date.getMonth()/12)));
 
@@ -47,7 +61,7 @@ console.log(Style.bold(Style.underline('\nBilling:')));
     invoice_data.billing_city = prompt('    ' + Style.green('🏙️') + '  Billing City:');
 
 console.log(Style.bold(Style.underline('\nItem Ledger:')));
-    console.log(Style.italic('List items in the format: Rocket Design, Painting Lesson, Tech Support'))
+    console.log(Style.italic(Style.dim('List items in the format: Rocket Design, Painting Lesson, Tech Support')))
     invoice_data.items = prompt('    ' + Style.yellow('📦') + ' Items:');
 
     // Remove empty properties used for console.log
@@ -63,7 +77,7 @@ console.log(Style.bold(Style.underline('\nItem Ledger:')));
     console.log('');
 
     invoice_data.items.forEach( (e, index) => {
-        invoice_data.item_prices[index] = prompt('    ' + Style.yellow('💵') + ' Charge for \'' + invoice_data.items[index] + '\'' + ':');
+        invoice_data.item_prices[index] = numFromStr(prompt('    ' + Style.yellow('💵') + ' Charge for \'' + invoice_data.items[index] + '\'' + ':'));
     } )
 
     let expected_subtotal = invoice_data.item_prices.reduce((a, b) => { return parseInt(a) + parseInt(b) });
@@ -72,12 +86,23 @@ console.log(Style.bold(Style.underline('\nMiscellaneous:')));
     invoice_data.note = prompt('    ' + Style.magenta('📝') + ' Note:');
 
 console.log(Style.bold(Style.underline('\nTotals:')));
-    invoice_data.subtotal = prompt('    ' + Style.blue('🧾') + ' Subtotal:', expected_subtotal);
-    invoice_data.discount = prompt('    ' + Style.blue('💸') + ' Discount:');
-    console.log(Style.italic('Include percent (%) sign to auto calculate based on a rate.'));
+    invoice_data.subtotal = numFromStr(prompt('    ' + Style.blue('🧾') + ' Subtotal:', expected_subtotal));
+    invoice_data.discount = numFromStr(prompt('    ' + Style.blue('💸') + ' Discount:'));
+
+    console.log(Style.italic(Style.dim('Include percent (%) sign to auto calculate based on a rate.')));
     invoice_data.tax = prompt('    ' + Style.blue('🏛️') + '  Tax:');
-    invoice_data.shipping = prompt('    ' + Style.blue('🚚') + ' Shipping:');
-    invoice_data.total = prompt('    ' + Style.blue('🧾') + ' Total:', invoice_data.subtotal - invoice_data.discount);
+    if (invoice_data.tax.includes('%')) {
+        invoice_data.tax = numFromStr(invoice_data.tax)
+        invoice_data.tax = round(invoice_data.tax * ((invoice_data.subtotal - invoice_data.discount)/100), 2)
+    } else {
+        invoice_data.tax = numFromStr(invoice_data.tax)
+    }
+
+    invoice_data.shipping = numFromStr(prompt('    ' + Style.blue('🚚') + ' Shipping:'));
+
+    invoice_data.total = round(numFromStr(((invoice_data.subtotal - invoice_data.discount) + invoice_data.tax + invoice_data.shipping)), 2);
+
+    console.log('    ' + Style.blue('🧾') + ' Total:' + ' $' + invoice_data.total)
 
 // Prompt the user for invoice field data
 /*
