@@ -1,3 +1,26 @@
+
+/* invcc defaults config
+ *
+ * If you have a problem with how long these lines are,
+ * then set your IDE to wrap them or something idk.
+ * 
+ * Here's how this works
+ * Each category and field are included in the 'defaults' object.
+ * 
+ * Categories:
+ *  - color, you can change the color value to any of red, green, blue, magenta, yellow, ... to change the categories color when color is enabled
+ * 
+ * Fields:
+ *  - icon, an emoji displayed next to the field name when icons are enabled
+ *  - type, the field type. Changes how the input is saved. The following types are avaliable: string, number (TODO: date, price)
+ *  - auto, or Automatic suggestion. This is an expression/value which is avaliable next to the prompt during invoice creation, and can be accepted by pressing enter without entering a new value.
+ *  - value, or override value. This value will be used if avaliable.
+ * If value is set to anything other than null, the value will be skipped when filling invoices.
+ * 
+*/
+
+import * as Helpers from "./helpers.js"
+
 export let defaults = {
     "General Details": {
         color: "red",
@@ -5,17 +28,16 @@ export let defaults = {
             "Invoice Number": {
                 icon: "📟",
                 type: "number",
-                value: null
             },
             "Creation Date": {
                 icon: "📆",
                 type: "string",
-                value: null
+                auto: Helpers.datePretty(Helpers.date.getMonth(), Helpers.date.getDate(), Helpers.date.getFullYear()),
             },
             "Due Date": {
                 icon: "📆",
                 type: "string",
-                value: null
+                auto: Helpers.datePretty((Helpers.date.getMonth()+1)%12, Helpers.date.getDate(), Helpers.date.getFullYear()+Math.floor(Helpers.date.getMonth()/12)),
             }
         }
     },
@@ -25,22 +47,21 @@ export let defaults = {
             "Name": {
                 icon: "🧑",
                 type: "string",
-                value: null
+
+                // If a 'value' property is filled on a field, it will automatically be used instead of prompting the user
+                value: ''
             },
             "Address": {
                 icon: "📍",
                 type: "string",
-                value: null
             },
             "Phone Number": {
                 icon: "📞",
                 type: "string",
-                value: null
             },
             "Email Address": {
                 icon: "📧",
                 type: "string",
-                value: null
             }
         }
     },
@@ -50,27 +71,23 @@ export let defaults = {
             "Customer Name": {
                 icon: "🧑",
                 type: "string",
-                value: null
             },
             "Company": {
-                icon: "🏢 ",
+                icon: "🏢",
                 type: "string",
-                value: null
             },
             "Billing Street Address": {
                 icon: "📍",
                 type: "string",
-                value: null
             },
             "Billing Country": {
                 icon: "🌍",
                 type: "string",
-                value: null
+                
             },
             "Billing City": {
                 icon: "🏙️ ",
                 type: "string",
-                value: null
             }
         }
     },
@@ -80,7 +97,6 @@ export let defaults = {
             "Items": {
                 icon: "📦",
                 type: "string",
-                value: null
             }
         }
     },
@@ -90,7 +106,6 @@ export let defaults = {
             "Note": {
                 icon: "📝",
                 type: "string",
-                value: null
             }
         }
     },
@@ -100,27 +115,22 @@ export let defaults = {
             "Subtotal": {
                 icon: "🧾",
                 type: "number",
-                value: null
             },
             "Discount": {
                 icon: "💸",
                 type: "number",
-                value: null
             },
             "Tax": {
                 icon: "🏛️ ",
                 type: "number",
-                value: null
             },
             "Shipping": {
                 icon: "🚚",
                 type: "number",
-                value: null
             },
             "Total": {
                 icon: "🧾",
                 type: "number",
-                value: null
             }
         }
     }

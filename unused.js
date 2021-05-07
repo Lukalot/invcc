@@ -83,7 +83,7 @@ let invoice_data = {
 */
 
 // Sequence
-/* 
+
 console.log(Style.bold(Style.underline('General Details:')));
     invoice_data.invoice_number = numFromStr(prompt('    ' + Style.red('📟') + ' Invoice #:'));
     invoice_data.creation_date = prompt('    ' + Style.red('📆') + ' Date:', datePretty(date.getMonth(), date.getDate(), date.getFullYear()));
@@ -139,7 +139,7 @@ console.log(Style.bold(Style.underline('\nTotals:')));
     invoice_data.total = round(numFromStr(((invoice_data.subtotal - invoice_data.discount) + invoice_data.tax + invoice_data.shipping)), 2);
 
     console.log('    ' + Style.blue('🧾') + ' Total:' + ' $' + invoice_data.total)
-*/
+
 
 // Prompt the user for invoice field data
 /*
