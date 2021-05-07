@@ -10,6 +10,7 @@ const cli_args = parse(args);
 let options = {
     color: true,
     icons: true,
+    hints: true
 }
 
 // ideally, config should override program defaults,
@@ -18,11 +19,22 @@ let options = {
 
 // For now, flags:
 
-if (cli_args.i) {
+if (cli_args.noicon) {
     options.icons = false;
 }
-if (cli_args.c) {
+if (cli_args.nocolor) {
     options.color = false;
+}
+if (cli_args.nohint) {
+    options.hints = false;
+}
+
+if (cli_args.help || cli_args.h) {
+    console.log(
+```
+
+```
+    );
 }
 
 let template = Deno.readTextFile("./invoice_templates/sparksuite_simple.html");
