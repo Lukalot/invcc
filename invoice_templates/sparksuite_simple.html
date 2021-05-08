@@ -125,15 +125,15 @@
 						<table>
 							<tr>
 								<td>
-									Sparksuite, Inc.<br />
-									12345 Sunny Road<br />
-									Sunnyville, CA 12345
+									{{CLIENT_NAME}}<br />
+									{{BILLING_STREET_ADDRESS}}<br />
+									{{BILLING_CITY}}, {{BILLING_COUNTRY}}
 								</td>
 
 								<td>
 									Acme Corp.<br />
-									John Doe<br />
-									john@example.com
+									{{ISSUER_NAME}}<br />
+									{{ISSUER_EMAIL_ADDRESS}}
 								</td>
 							</tr>
 						</table>
@@ -159,9 +159,9 @@
 				</tr>
 
 				<tr class="item">
-					<td>Website design</td>
+					<td>{{ITEM}}</td>
 
-					<td>$300.00</td>
+					<td>{{ITEM_PRICES}}</td>
 				</tr>
 
 				<tr class="item">
@@ -179,7 +179,7 @@
 				<tr class="total">
 					<td></td>
 
-					<td>Total: $385.00</td>
+					<td>Total: ${{TOTAL}}</td>
 				</tr>
 			</table>
 		</div>

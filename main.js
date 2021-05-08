@@ -1,7 +1,7 @@
-import { Handlebars } from 'https://deno.land/x/handlebars/mod.ts';
 import { parse } from "https://deno.land/std@0.95.0/flags/mod.ts"
 import * as Style from "https://deno.land/std/fmt/colors.ts";
 import * as Helpers from "./helpers.js"
+import * as Mustache from 'https://deno.land/x/mustache/mod.ts';
 
 const { args } = Deno;
 const cli_args = parse(args);
@@ -39,14 +39,13 @@ if (cli_args.help || cli_args.h) {
     Deno.exit(1);
 }
 
-let template = Deno.readTextFile("./invoice_templates/sparksuite_simple.html");
-
 // console.log(Style)
 
 // Get data from defaults.json
 import { defaults } from "./defaults.js"
 
 let invoice_data = defaults;
+let invoice_view = {};
 
 /*
 function formatByType (type, data) {
@@ -123,8 +122,17 @@ for ( let i = 0; i < Object.keys(invoice_data).length; i ++ ) {
                 } )
             }
         }
+
+        // Add the field to the mustache view for later
+        let view_key = key.replace(/\s+/g, '_').toUpperCase();
+        invoice_view[view_key] = current_field.value;
     }
 }
 
-//console.log();
-console.log(invoice_data);
+let template = Deno.readTextFileSync('./invoice_templates/sparksuite_simple.html')
+
+console.log(invoice_view)
+
+var output_invoice = Mustache.render(template, invoice_view);
+
+Deno.writeTextFileSync('./output_invoice.html', output_invoice)

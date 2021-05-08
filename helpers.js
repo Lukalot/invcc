@@ -68,7 +68,7 @@ export let field_type = {
         return value;
     },
     tax: function (value, data) {
-        if (value.includes('%')) {
+        if (value?.includes('%')) {
             value = numFromStr(value)
             value = round(value * ((data['Totals'].fields.Subtotal.value - data['Totals'].fields.Discount.value)/100), 2)
             return value;

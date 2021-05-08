@@ -47,22 +47,22 @@ export let defaults = {
     'Issuer': {
         'color': 'blue',
         'fields': {
-            'Name': {
+            'Issuer Name': {
                 icon: '🧑',
                 format: Helpers.field_type.string,
 
                 // If a 'value' property is filled on a field, it will automatically be used instead of prompting the user
                 value: ''
             },
-            'Address': {
+            'Issuer Address': {
                 icon: '📍',
                 format: Helpers.field_type.string,
             },
-            'Phone Number': {
+            'Issuer Phone Number': {
                 icon: '📞',
                 format: Helpers.field_type.string,
             },
-            'Email Address': {
+            'Issuer Email Address': {
                 icon: '📧',
                 format: Helpers.field_type.string,
                 auto: () => 'example@email.com' // Simple auto suggestion, ideally you can put your address here. Or, you can replace this with a `value:` setting
@@ -72,11 +72,11 @@ export let defaults = {
     'Billing': {
         'color': 'green',
         'fields': {
-            'Customer Name': {
+            'Client Name': {
                 icon: '🧑',
                 format: Helpers.field_type.string,
             },
-            'Company': {
+            'Client Company': {
                 icon: '🏢',
                 format: Helpers.field_type.string,
             },
@@ -148,3 +148,4 @@ export let defaults = {
         }
     }
 }
+
