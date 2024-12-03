@@ -125,7 +125,15 @@ for ( let i = 0; i < Object.keys(invoice_data).length; i ++ ) {
 
         // Add the field to the mustache view for later
         let view_key = key.replace(/\s+/g, '_').toUpperCase();
-        invoice_view[view_key] = current_field.value;
+        if (key === 'Items') {
+            // Format items as array of objects with item name and price
+            invoice_view[view_key] = current_field.value.map((item, index) => ({
+                item: item,
+                price: current_field.item_prices[index].toFixed(2)
+            }));
+        } else {
+            invoice_view[view_key] = current_field.value;
+        }
     }
 }
 

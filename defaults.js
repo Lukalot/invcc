@@ -35,12 +35,12 @@ export let defaults = {
             'Creation Date': {
                 icon: '📆',
                 format: Helpers.field_type.string,
-                auto: () => Helpers.datePretty(Helpers.date.getMonth(), Helpers.date.getDate(), Helpers.date.getFullYear()),
+                auto: () => Helpers.datePretty(Helpers.date.getMonth()+1, Helpers.date.getDate(), Helpers.date.getFullYear()),
             },
             'Due Date': {
                 icon: '📆',
                 format:  Helpers.field_type.string,
-                auto: () => Helpers.datePretty((Helpers.date.getMonth()+1)%12, Helpers.date.getDate(), Helpers.date.getFullYear()+Math.floor(Helpers.date.getMonth()/12)),
+                auto: () => Helpers.datePretty((Helpers.date.getMonth()+1)%11, Helpers.date.getDate(), Helpers.date.getFullYear()+Math.floor(Helpers.date.getMonth()/12)),
             }
         }
     },

@@ -141,40 +141,18 @@
 				</tr>
 
 				<tr class="heading">
-					<td>Payment Method</td>
-
-					<td>Check #</td>
-				</tr>
-
-				<tr class="details">
-					<td>Check</td>
-
-					<td>1000</td>
-				</tr>
-
-				<tr class="heading">
 					<td>Item</td>
 
 					<td>Price</td>
 				</tr>
 
+				{{#ITEMS}}
 				<tr class="item">
-					<td>{{ITEM}}</td>
+					<td>{{item}}</td>
 
-					<td>{{ITEM_PRICES}}</td>
+					<td>${{price}}</td>
 				</tr>
-
-				<tr class="item">
-					<td>Hosting (3 months)</td>
-
-					<td>$75.00</td>
-				</tr>
-
-				<tr class="item last">
-					<td>Domain name (1 year)</td>
-
-					<td>$10.00</td>
-				</tr>
+				{{/ITEMS}}
 
 				<tr class="total">
 					<td></td>
